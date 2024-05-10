@@ -1,0 +1,13 @@
+browsers:
+  - browser: chrome
+    os: Windows
+    os_version: 10
+    browserstack.local: true
+  - browser: safari
+    os: OSX
+    os_version: Mojave
+    browserstack.local: true
+  - browser: firefox
+    os: Windows
+    os_version: 10
+    browserstack.local: true

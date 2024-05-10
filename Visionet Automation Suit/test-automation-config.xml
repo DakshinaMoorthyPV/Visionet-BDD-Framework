@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- General Test Configuration -->
+	<entry key="TestEnvironment">Staging</entry> <!-- Options: 'Staging', 'QA', 'UAT', 'Production' -->
+	<entry key="TestType">Web</entry> <!-- Options: 'Web', 'Native', 'Hybrid', 'API' -->
+
+	<!-- Execution Environment Configuration -->
+	<entry key="ExecutionLocation">Local</entry> <!-- Options: 'Local', 'BrowserStack', 'Emulator' (Android only), 'Simulator' 
+		(iOS only), 'RealDevices' (Android/iOS only) -->
+	<entry key="Platform">Windows</entry> <!-- Options: 'Windows', 'Mac', 'Android', 'iOS' -->
+	<entry key="platformType">Emulator</entry> <!-- Options: 'Emulator' (Android only), 'Simulator' (iOS only), 'RealDevices' 
+		(Android/iOS) -->
+
+	<!-- Feature File Path Configuration -->
+	<!-- FeatureFilePath: Path to BDD feature files. - Single File Example: 
+		"Features/Login.feature" - Multiple Files Example: "Features/Login.feature, 
+		Features/Checkout.feature" - Single Directory Example: "Features/Regression" 
+		- Multiple Directories Example: "Features/Regression, Features/SmokeTests" 
+		Set this based on your project structure and testing needs. -->
+	<entry key="FeatureFilePath">features/Sprint1</entry> <!-- Specify paths to BDD feature files -->
+
+	<!-- TestNG Configuration for Parallel Execution and Test Grouping -->
+	<entry key="Parallel">No</entry> <!-- Options: 'Yes', 'No' -->
+	<entry key="Thread-count">5</entry>
+	<entry key="Grouping">No</entry> <!-- Options: 'Yes', 'No' -->
+	<entry key="Grouping-oninclude">sanity</entry>
+	<entry key="Grouping-onexclude">none</entry>
+
+	<!-- Web Automation Configuration -->
+	<entry key="Web_BaseURL">https://www.flipkart.com/</entry>
+	<entry key="Web_Browser">Chrome</entry> <!-- Options: 'Chrome', 'Firefox', 'Edge', 'Safari' (Mac only) -->
+	<entry key="Web_Headless_Browser">No</entry> <!-- Options: 'Yes', 'No' -->
+	<entry key="Web_Username">9789998021</entry>
+	<entry key="Web_Password">RGFrc2hpbmEgTW9vcnRoeQ==</entry><!-- Use Base64 encoded -->
+
+	<!-- Mobile Automation Configuration -->
+	<entry key="Mobile_AndroidPlatformName">Android</entry>
+	<entry key="Mobile_AndroidAutomationName">UiAutomator2</entry>
+	<entry key="Mobile_iOSPlatformName">iOS</entry>
+	<entry key="Mobile_iOSAutomationName">XCUITest</entry>
+
+	<!-- Android Emulator Configuration -->
+	<entry key="Emulator_DeviceName">Galaxy_S24_Ultra_Emulator</entry>
+	<entry key="udid">emulator-5554</entry>
+	<entry key="Mobile_AndroidPlatformVersion">14.0</entry>
+	<entry key="Mobile_AndroidApk">${project.root}/src/main/resources/apps/Flipkart_7.85_apkpure.apk</entry>
+	<entry key="Mobile_AndroidAppPackage">com.flipkart.android</entry>
+	<entry key="Mobile_AndroidAppActivity">com.flipkart.android.activity.HomeFragmentHolderActivity</entry>
+	<entry key="Mobile_AndroidNoReset">true</entry>
+	<entry key="Mobile_AndroidFullReset">false</entry>
+
+	<!-- Android Physical Device Configuration -->
+	<entry key="Mobile_AndroidDeviceName">Samsung Galaxy S21</entry>
+	<entry key="Android_udid">emulator-5554</entry>
+
+	<!-- iOS Configuration for Both Simulator and Physical Device -->
+	<entry key="Mobile_iOSPlatformVersion">15.4</entry>
+	<entry key="Mobile_iOSDeviceName">iPhone 13</entry>
+	<entry key="Mobile_iOSApp">${project.root}/src/main/resources/apps/Flipkart_7.85_apkpure.app</entry>
+	<entry key="Mobile_iOSNoReset">true</entry>
+	<entry key="Mobile_iOSUseNewWDA">true</entry>
+	<entry key="Mobile_iOSXcodeOrgId">69PLJFK56W</entry>
+	<entry key="Mobile_iOSXcodeSigningId">iPhone Developer</entry>
+	<entry key="Mobile_iOSBundleId">com.flipkart.shopping</entry>
+
+	<!-- Appium and Emulator Setup -->
+	<entry key="Path_NodeJsexe">C:\\Program Files\\nodejs\\node.exe</entry>
+	<entry key="Path_AppiumJs">C:\\Users\\Dakshina.Moorthy\\AppData\\Roaming\\npm\\node_modules\\appium\\build\\lib\\main.js</entry>
+	<entry key="SDK_Path">C:\\Users\\Dakshina.Moorthy\\AppData\\Local\\Android\\Sdk</entry>
+	<entry key="Emulator_Name">Galaxy_S24_Ultra_Emulator</entry>
+
+	<!-- API Testing Configuration -->
+	<entry key="API_BaseURL">https://api.flipkart.net</entry>
+	<entry key="API_AuthType">OAuth 2.0</entry> <!-- Commonly used auth type for such APIs -->
+	<entry key="API_Username">visionet_username</entry>
+	<entry key="API_Password">U2VjdXJlUGFzc3dvcmQxMjM=</entry> <!-- Base64 encode your actual password -->
+	<entry key="API_Token">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZsaXBLYXJ0VXNlciIsImlhdCI6MTUxNjIzOTAyMn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</entry> <!-- Token obtained via OAuth mechanism -->
+	<entry key="API_ClientID">1234567890abcdef1234</entry> <!-- Provided by Flipkart when you register your application -->
+	<entry key="API_ClientSecret">bXlTZWNyZXRDTElFTlRTZWNyZXRJc0hFcmU=</entry> <!-- Also provided by Flipkart, encode in Base64 for storage -->
+
+	<!-- Extent Reporting Configuration -->
+	<entry key="ExtentReport_DocumentTitle">Automation Test Report</entry>
+	<entry key="ExtentReport_ReportName">Test Execution Report</entry>
+
+	<!-- BrowserStack Configuration -->
+	<entry key="BrowserStack_Username">visionetsystems_adminuser</entry>
+	<entry key="BrowserStack_AccessKey">ZHVtbXlBY2Nlc3NLZXkxMjM=</entry> <!-- Base64 encoded -->
+	<entry key="BrowserStack_Debug">true</entry> <!-- Options: 'true', 'false' -->
+	<entry key="BrowserStack_NetworkLogs">true</entry> <!-- Options: 'true', 'false' -->
+	<entry key="BrowserStack_Video">true</entry> <!-- Options: 'true', 'false' -->
+	<entry key="BrowserStack_Local">true</entry> <!-- Options: 'true', 'false' -->
+	<entry key="BrowserStack_Screenshots">true</entry> <!-- Options: 'true', 'false' -->
+	<entry key="BrowserStack_RetryMechanism">on</entry> <!-- Options: 'on', 'off' -->
+	<entry key="BrowserStack_BrowserName">Chrome</entry>
+	<entry key="BrowserStack_BrowserVersion">latest</entry>
+	<entry key="BrowserStack_OS_Desktop">Windows</entry>
+	<entry key="BrowserStack_OSVersion_Desktop">10</entry>
+	<entry key="BrowserStack_Resolution_Desktop">1920x1080</entry>
+	<entry key="BrowserStack_RealMobile">true</entry> <!-- Options: 'true', 'false' -->
+
+	<!-- Email Configuration -->
+	<entry key="SendReportEmail">No</entry><!-- Options: 'Yes', 'No' -->
+	<entry key="SMTPHost">smtp.office365.com</entry><!-- Options: 'smtp.office365.com', 
+		'smtp.gmail.com' -->
+	<entry key="SMTPPort">587</entry><!-- Standard TLS port -->
+	<entry key="SMTPUsername">dakshina.moorthy@visionet.com</entry>
+	<entry key="SMTPPassword">RGFrc2hpbmEgTW9vcnRoeQ==</entry> <!-- Use Base64 encoded -->
+	<entry key="SMTPAuthEnabled">true</entry><!-- Options: 'true', 'false' -->
+	<entry key="SMTPTLS">true</entry><!-- Options: 'true', 'false' -->
+	<entry key="SMTPSSLSocketPort">465</entry><!-- SSL Port -->
+	<entry key="SMTPSSLSocketClass">javax.net.ssl.SSLSocketFactory</entry>
+	<entry key="ToEmailIDs">AshishKumar.Vats@visionet.com,bhuvaneswari.t@visionet.com</entry><!-- 
+		To send to multiple recipients, separate each email ID with a comma -->
+	<entry key="CCEmailIDs">sarath.babu@visionet.com</entry><!-- To send to multiple 
+		CC recipients, separate each email ID with a comma -->
+	<entry key="BCCEmailIDs">dakshina.moorthy@visionet.com</entry><!-- Leave empty if 
+		no BCC recipients -->
+
+</properties>

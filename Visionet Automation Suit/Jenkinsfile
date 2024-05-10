@@ -1,0 +1,86 @@
+pipeline {
+    agent any
+
+    triggers {
+        // Scheduled to run at 3 AM IST every day (which is 9:30 PM UTC of the previous day)
+        cron('30 21 * * *')
+    }
+
+    environment {
+        MAVEN_HOME = "${tool name='YOUR_MAVEN_TOOL_NAME'}" // Replace with your actual Maven tool name
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm // Automatically checks out the code from the configured SCM repository
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                sh "${MAVEN_HOME}/bin/mvn clean test" // Runs Maven to execute the test phase
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml' // Publish JUnit test results
+                    archiveArtifacts artifacts: '**/target/surefire-reports/*', fingerprint: true // Archive artifacts
+                    publishHTML([
+                        reportDir: 'target/surefire-reports',
+                        reportFiles: 'index.html',
+                        reportName: "HTML Test Report",
+                        keepAll: true,
+                        allowMissing: false
+                    ]) // Publish HTML reports
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                def recipientEmails = "dakshina.moorthy@visionetsystem.com, bhuvaneswari.t@visionetsystem.com"
+                def ccRecipients = "dhruvakumar.r@visionet.com"
+
+                // Extracting first names from the email addresses
+                def firstNames = recipientEmails.split(',').collect { it.trim().split('@')[0] }
+                def firstNameString = firstNames.join(', ')
+
+                mail to: recipientEmails,
+                    cc: ccRecipients,
+                    subject: "Jenkins Build: ${currentBuild.fullDisplayName}",
+                    body: """Hello ${firstNameString},
+
+Here are the details of the Jenkins build:
+Build: ${currentBuild.fullDisplayName}
+Status: ${currentBuild.result}
+Console Log: ${env.BUILD_URL}console
+"""
+            }
+            slackSend(
+                color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
+                message: "Build: ${currentBuild.fullDisplayName}, Status: ${currentBuild.result}"
+            )
+            script {
+                // Get the current date and time
+                def date = new Date()
+                def formattedDate = date.format('yyyyMMdd')
+                def formattedTime = date.format('HHmmss')
+
+                // Define the path with date and time
+                def destinationPath = "${env.WORKSPACE}\\Execution-test-output\\jenkins\\report\\${formattedDate}\\${formattedTime}"
+
+                // Create the directories and copy the reports
+                bat "if not exist \"${destinationPath}\" mkdir \"${destinationPath}\""
+                bat "xcopy /Y /I \"target\\surefire-reports\" \"${destinationPath}\""
+            }
+        }
+        success {
+            echo "The build was successful!"
+        }
+        failure {
+            echo "The build failed!"
+        }
+    }
+}

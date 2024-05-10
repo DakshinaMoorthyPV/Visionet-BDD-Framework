@@ -1,0 +1,137 @@
+# Compiled source #
+###################
+*.class
+*.com
+*.dll
+*.exe
+*.o
+*.so
+
+# Package Files #
+#################
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.gz
+*.iso
+
+# IDE specific #
+################
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders/
+.metadata
+
+# VS Code
+.vscode/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# BlueJ
+*.ctxt
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlitedb
+*.sqlite
+
+# Maven #
+#########
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/
+*.mvn/wrapper/maven-wrapper.jar
+*.mvn/wrapper/MavenWrapperDownloader.java
+
+# Node.js #
+###########
+node_modules/
+
+# Python Virtualenv #
+#####################
+venv/
+env/
+ENV/
+
+# Operating system files #
+##########################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Selenium & Appium specifics #
+###############################
+*.apk
+*.app
+
+# Reports and artifacts #
+#########################
+reports/
+surefire-reports/
+failsafe-reports/
+test-output/
+junit-reports/
+junit.xml
+testng.xml
+Sprint-Execution-Reports/
+
+# Security #
+############
+*.keystore
+*.jks
+*.p12
+
+# Media files #
+###############
+*.swf
+*.mpg
+*.mpeg
+*.avi
+*.mov
+*.mp4
+*.aaf
+*.lyr
+*.pdf
+
+# Temporary files #
+###################
+temp/

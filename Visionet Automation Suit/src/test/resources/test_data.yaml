@@ -1,0 +1,26 @@
+web:
+  baseUrl: "https://www.flipkart.com"
+  loginPage: "/login"
+  username: "testuser@example.com"
+  password: "DummyKey123"
+  productSearch:
+    products:
+      - "Samsung Galaxy S21"
+      - "iPhone 13"
+      - "OnePlus Nord 2"
+
+mobile:
+  productSearch:
+    products:
+      - "Samsung Galaxy S21"
+      - "iPhone 13"
+      - "OnePlus Nord 2"
+
+api:
+  baseUrl: "https://api.flipkart.com"
+  authToken: "your_api_auth_token_here"
+  productSearchEndpoint: "/products/search"
+  products:
+    - "Samsung Galaxy S21"
+    - "iPhone 13"
+    - "OnePlus Nord 2"
