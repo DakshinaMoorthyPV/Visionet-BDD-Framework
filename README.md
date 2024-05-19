@@ -1,3 +1,27 @@
+<a href="https://visionet.com" target="_blank">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiSibSX3_L-NrWwg_E2K53LfbAW0NcB6byNJFDqgiEzA&s" alt="Visionet" style="width: 200px; height: auto;">
+</a>
+
+<div style="width: 100%; height: 200px; overflow: hidden;">
+    <img src="https://i.ibb.co/p0DwV2W/waving-indian-flag-design-with-blue-chakra-1017-23041.png" alt="Waving Indian Flag" style="width: 100%; height: auto; object-fit: cover; object-position: center;">
+</div>
+
+<div style="text-align: left; background-color:#ccc; font-weight: 400;">
+    <h1>Visionet's Selenium Automation Testing Framework</h1>
+    <img src="https://badgen.net/badge/Project/Info/006daf?icon=info" alt="Project Info Badge"> &nbsp;
+    <img src="https://badgen.net/badge/Open%20Source/Yes/4caf50?icon=github" alt="Open Source Badge"> &nbsp;
+    <img src="https://badgen.net/badge/License/MIT/blue" alt="License Badge"> &nbsp;
+    <img src="https://badgen.net/badge/Tested%20On/Windows/00BFFF?icon=windows" alt="Tested On Windows Badge"> &nbsp;
+    <img src="https://badgen.net/badge/Made%20With/Selenium/43B02A?icon=selenium" alt="Made With Selenium Badge"> &nbsp;
+    <img src="https://badgen.net/badge/Made%20With/Java/007396?icon=java" alt="Made With Java Badge"> &nbsp;
+    <img src="https://badgen.net/badge/Made%20With/Cucumber/green" alt="Made With Cucumber Badge">
+    <img src="https://badgen.net/badge/Made%20With/TestNG/1F4E78?icon=testng" alt="Made With TestNG Badge"> &nbsp;
+    <br/>
+    <p>Welcome to Visionet's Selenium Automation Testing Framework. This powerful framework integrates Cucumber, BDD, and TestNG to deliver efficient and effective testing for web applications.</p>
+ 
+### ⚠️ **Dear all, before cloning the project, please set up SSH keys for GitHub access.**
+  
+</div>
 <h1>Setting Up SSH Keys for GitHub Access</h1>
 <ol>
   <li>
