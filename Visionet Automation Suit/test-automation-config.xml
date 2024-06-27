@@ -3,10 +3,10 @@
 <properties>
 	<!-- General Test Configuration -->
 	<entry key="TestEnvironment">Staging</entry> <!-- Options: 'Staging', 'QA', 'UAT', 'Production' -->
-	<entry key="TestType">Web</entry> <!-- Options: 'Web', 'Native', 'Hybrid', 'API' -->
+	<entry key="TestType">API</entry> <!-- Options: 'Web', 'Native', 'Hybrid', 'API', 'DataBase' -->
 
 	<!-- Execution Environment Configuration -->
-	<entry key="ExecutionLocation">Local</entry> <!-- Options: 'Local', 'BrowserStack', 'Emulator' (Android only), 'Simulator' 
+	<entry key="ExecutionLocation">BrowserStack</entry> <!-- Options: 'Local', 'BrowserStack', 'Emulator' (Android only), 'Simulator' 
 		(iOS only), 'RealDevices' (Android/iOS only) -->
 	<entry key="Platform">Windows</entry> <!-- Options: 'Windows', 'Mac', 'Android', 'iOS' -->
 	<entry key="platformType">Emulator</entry> <!-- Options: 'Emulator' (Android only), 'Simulator' (iOS only), 'RealDevices' 
@@ -18,7 +18,7 @@
 		Features/Checkout.feature" - Single Directory Example: "Features/Regression" 
 		- Multiple Directories Example: "Features/Regression, Features/SmokeTests" 
 		Set this based on your project structure and testing needs. -->
-	<entry key="FeatureFilePath">features/Sprint1</entry> <!-- Specify paths to BDD feature files -->
+	<entry key="FeatureFilePath">features/api</entry> <!-- Specify paths to BDD feature files -->
 
 	<!-- TestNG Configuration for Parallel Execution and Test Grouping -->
 	<entry key="Parallel">No</entry> <!-- Options: 'Yes', 'No' -->
@@ -28,7 +28,7 @@
 	<entry key="Grouping-onexclude">none</entry>
 
 	<!-- Web Automation Configuration -->
-	<entry key="Web_BaseURL">https://www.flipkart.com/</entry>
+	<entry key="Web_BaseURL">http://www.flipkart.com/</entry>
 	<entry key="Web_Browser">Chrome</entry> <!-- Options: 'Chrome', 'Firefox', 'Edge', 'Safari' (Mac only) -->
 	<entry key="Web_Headless_Browser">No</entry> <!-- Options: 'Yes', 'No' -->
 	<entry key="Web_Username">9789998021</entry>
@@ -84,8 +84,8 @@
 	<entry key="ExtentReport_ReportName">Test Execution Report</entry>
 
 	<!-- BrowserStack Configuration -->
-	<entry key="BrowserStack_Username">visionetsystems_adminuser</entry>
-	<entry key="BrowserStack_AccessKey">ZHVtbXlBY2Nlc3NLZXkxMjM=</entry> <!-- Base64 encoded -->
+	<entry key="BrowserStack_Username">dakshinamoorthy_xIY7wH</entry>
+	<entry key="BrowserStack_AccessKey">WjVCVHVucVlFN0dBQzFLUG5QYWk=</entry> <!-- Base64 encoded -->
 	<entry key="BrowserStack_Debug">true</entry> <!-- Options: 'true', 'false' -->
 	<entry key="BrowserStack_NetworkLogs">true</entry> <!-- Options: 'true', 'false' -->
 	<entry key="BrowserStack_Video">true</entry> <!-- Options: 'true', 'false' -->
@@ -93,10 +93,11 @@
 	<entry key="BrowserStack_Screenshots">true</entry> <!-- Options: 'true', 'false' -->
 	<entry key="BrowserStack_RetryMechanism">on</entry> <!-- Options: 'on', 'off' -->
 	<entry key="BrowserStack_BrowserName">Chrome</entry>
-	<entry key="BrowserStack_BrowserVersion">latest</entry>
-	<entry key="BrowserStack_OS_Desktop">Windows</entry>
-	<entry key="BrowserStack_OSVersion_Desktop">10</entry>
+	<entry key="BrowserStack_BrowserVersion">latest-beta</entry><!-- latest/latest-1/specify version -->
+	<entry key="BrowserStack_OS_Desktop">Windows</entry><!-- OS X /Windows  -->
+	<entry key="BrowserStack_OSVersion_Desktop">11</entry>
 	<entry key="BrowserStack_Resolution_Desktop">1920x1080</entry>
+
 	<entry key="BrowserStack_RealMobile">true</entry> <!-- Options: 'true', 'false' -->
 
 	<!-- Email Configuration -->

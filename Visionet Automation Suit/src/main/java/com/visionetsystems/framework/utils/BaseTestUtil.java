@@ -13,6 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +30,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -45,6 +48,7 @@ import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.NetworkMode;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.safari.options.SafariOptions;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -94,7 +98,7 @@ public class BaseTestUtil {
 		case "BrowserStack":
 			switch (UIConstantsUtil.TEST_TYPE) {
 			case "Web":
-				setupBrowserStackWebEnvironment(platform);
+				setupBrowserStackWebEnvironment();
 				break;
 			case "Native":
 				setupBrowserStackNativeEnvironment(platform);
@@ -116,21 +120,49 @@ public class BaseTestUtil {
 		}
 
 		String projectRootPath = System.getProperty("user.dir");
-		String web_Headless_Browser = UIConstantsUtil.APP_CONFIG_MAP.get("Web_Headless_Browser");
-		boolean isHeadless = "Yes".equalsIgnoreCase(web_Headless_Browser);
+		String webHeadlessBrowser = UIConstantsUtil.APP_CONFIG_MAP.get("Web_Headless_Browser");
+		boolean isHeadless = "Yes".equalsIgnoreCase(webHeadlessBrowser);
+		String driverPath = "", binaryPath = "", browserVersion = "";
 
 		switch (browser) {
 		case "Chrome":
-			System.setProperty("webdriver.chrome.driver",
-					projectRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources"
-							+ File.separator + "drivers" + File.separator + "chromedriver.exe");
+			String osName = UIConstantsUtil.APP_CONFIG_MAP.get("Platform").toLowerCase();
+			String osArch = System.getProperty("os.arch").toLowerCase();
+			System.out.println("Operating System: " + osName);
+			System.out.println("Architecture: " + osArch);
+
+			if (osName.contains("win")) {
+				driverPath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "drivers"
+						+ File.separator + "chromedriver.exe";
+				binaryPath = "chrome-win64" + File.separator + "chrome.exe";
+			} else if (osName.contains("mac")) {
+				if (osArch.contains("aarch64") || osArch.contains("arm")) {
+					driverPath = "src" + File.separator + "main" + File.separator + "resources" + File.separator
+							+ "drivers" + File.separator + "chromedriver-mac-arm64";
+				} else if (osArch.contains("amd64") || osArch.contains("x86_64")) {
+					driverPath = "src" + File.separator + "main" + File.separator + "resources" + File.separator
+							+ "drivers" + File.separator + "chromedriver-mac-x64";
+				} else {
+					throw new RuntimeException("Unsupported architecture: " + osArch);
+				}
+				binaryPath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+			} else {
+				throw new RuntimeException("Unsupported operating system.");
+			}
+
+			System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + driverPath);
 			ChromeOptions chromeOptions = chromeOptions();
-			DesiredCapabilities crcapabilities = new DesiredCapabilities();
-			crcapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-			chromeOptions.merge(crcapabilities);
-			chromeOptions.setBinary(projectRootPath + File.separator + "chrome-win64" + File.separator + "chrome.exe");
+			chromeOptions.setBinary(binaryPath);
+
+			DesiredCapabilities crCapabilities = new DesiredCapabilities();
+			crCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+			chromeOptions.merge(crCapabilities);
+
 			System.setProperty("jdk.internal.lambda.dumpProxyClasses", "");
+
 			UIConstantsUtil.WEB_DRIVER = new ChromeDriver(chromeOptions);
+			browserVersion = getSystemChromeVersion();
+			System.out.println(browserVersion);
 			break;
 		case "Firefox":
 			String firefoxDriverPath = projectRootPath + File.separator + "src" + File.separator + "main"
@@ -139,15 +171,17 @@ public class BaseTestUtil {
 			WebDriverManager.firefoxdriver().setup();
 			FirefoxOptions firefoxOptions = new FirefoxOptions();
 			if (isHeadless) {
-				firefoxOptions.addArguments("--headless"); // Run in headless mode
+				firefoxOptions.addArguments("--headless");
 			}
 			UIConstantsUtil.WEB_DRIVER = new FirefoxDriver(firefoxOptions);
+			browserVersion = getSystemFirefoxVersion();
 			break;
 		case "Safari":
 			if (!platform.equals("Mac")) {
 				throw new IllegalArgumentException("Safari is only supported on Mac");
 			}
 			UIConstantsUtil.WEB_DRIVER = new SafariDriver();
+			browserVersion = getSystemSafariVersion();
 			break;
 		case "Edge":
 			WebDriverManager.edgedriver().setup();
@@ -156,13 +190,205 @@ public class BaseTestUtil {
 				edgeOptions.addArguments("--headless", "--disable-gpu");
 			}
 			UIConstantsUtil.WEB_DRIVER = new EdgeDriver(edgeOptions);
+			browserVersion = getSystemEdgeVersion();
 			break;
+		default:
+			throw new IllegalArgumentException("Unsupported browser: " + browser);
 		}
-		configureTrustAllCerts();
-		UIConstantsUtil.WEB_DRIVER.manage().window().maximize();
-		UIConstantsUtil.WEB_DRIVER.manage().deleteAllCookies();
-		UIConstantsUtil.WEB_DRIVER.navigate().to(UIConstantsUtil.APP_CONFIG_MAP.get("Web_BaseURL"));
-		new WaitUtils(UIConstantsUtil.WEB_DRIVER).waitForPageLoaded();
+
+		try {
+			configureTrustAllCerts();
+			UIConstantsUtil.WEB_DRIVER.manage().window().maximize();
+			UIConstantsUtil.WEB_DRIVER.manage().deleteAllCookies();
+			UIConstantsUtil.WEB_DRIVER.navigate().to(UIConstantsUtil.APP_CONFIG_MAP.get("Web_BaseURL"));
+			new WaitUtils(UIConstantsUtil.WEB_DRIVER).waitForPageLoaded();
+			new WebResponseValidator(UIConstantsUtil.WEB_DRIVER).verifyWebResponseStatus();
+		} catch (Exception e) {
+			handleVersionMismatch(driverPath, browserVersion);
+		}
+	}
+
+	private static void handleVersionMismatch(String driverPath, String browserVersion) {
+		try {
+			String driverVersion = VersionUtils.getChromedriverVersion(driverPath);
+			System.out.println("Browser version: " + browserVersion);
+			System.out.println("Driver version: " + driverVersion);
+
+			if (!browserVersion.split("\\.")[0].equals(driverVersion.split("\\.")[0])) {
+				throw new RuntimeException("Incompatible browser and driver versions: Browser is " + browserVersion
+						+ ", Driver is " + driverVersion);
+			}
+		} catch (IOException ex) {
+			throw new RuntimeException("Failed to check versions: " + ex.getMessage(), ex);
+		}
+	}
+
+	private static String getSystemChromeVersion() throws IOException {
+		String osName = System.getProperty("os.name").toLowerCase();
+		String chromeVersionCommand;
+		String chromePath = "";
+
+		if (osName.contains("win")) {
+			// Check both potential installation paths for Chrome on Windows
+			String chromePathX86 = System.getenv("ProgramFiles(x86)") + "\\Google\\Chrome\\Application\\chrome.exe";
+			String chromePathX64 = System.getenv("ProgramFiles") + "\\Google\\Chrome\\Application\\chrome.exe";
+
+			File chromeFileX86 = new File(chromePathX86);
+			File chromeFileX64 = new File(chromePathX64);
+
+			if (chromeFileX86.exists()) {
+				chromePath = chromePathX86;
+			} else if (chromeFileX64.exists()) {
+				chromePath = chromePathX64;
+			} else {
+				throw new RuntimeException("Chrome executable not found in standard locations.");
+			}
+
+			chromeVersionCommand = "wmic datafile where name=\"" + chromePath.replace("\\", "\\\\")
+					+ "\" get Version /value";
+		} else if (osName.contains("mac")) {
+			chromeVersionCommand = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version";
+		} else if (osName.contains("nux")) {
+			chromeVersionCommand = "google-chrome --version";
+		} else {
+			throw new RuntimeException("Unsupported operating system.");
+		}
+
+		Process process = Runtime.getRuntime().exec(chromeVersionCommand);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		StringBuilder output = new StringBuilder();
+		String line;
+
+		while ((line = reader.readLine()) != null) {
+			output.append(line);
+		}
+		reader.close();
+
+		// Ensure the process completes
+		try {
+			process.waitFor();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new IOException("Interrupted while waiting for process to finish.", e);
+		}
+
+		// Check if the process completed successfully
+		if (process.exitValue() != 0) {
+			throw new IOException("Error running command: " + chromeVersionCommand);
+		}
+
+		String versionOutput = output.toString().trim();
+		// Handle cases where the output format might differ
+		String[] versionParts = versionOutput.split("=");
+		if (versionParts.length != 2) {
+			throw new IOException("Unexpected version output: " + versionOutput);
+		}
+		return versionParts[1];
+	}
+
+	private static String getSystemFirefoxVersion() throws IOException {
+		String osName = System.getProperty("os.name").toLowerCase();
+		String firefoxVersionCommand;
+		String firefoxPath = "";
+
+		if (osName.contains("win")) {
+			// Check both potential installation paths for Firefox on Windows
+			String firefoxPathX86 = System.getenv("ProgramFiles(x86)") + "\\Mozilla Firefox\\firefox.exe";
+			String firefoxPathX64 = System.getenv("ProgramFiles") + "\\Mozilla Firefox\\firefox.exe";
+
+			File firefoxFileX86 = new File(firefoxPathX86);
+			File firefoxFileX64 = new File(firefoxPathX64);
+
+			if (firefoxFileX86.exists()) {
+				firefoxPath = firefoxPathX86;
+			} else if (firefoxFileX64.exists()) {
+				firefoxPath = firefoxPathX64;
+			} else {
+				throw new RuntimeException("Firefox executable not found in standard locations.");
+			}
+
+			firefoxVersionCommand = "\"" + firefoxPath + "\" --version";
+		} else if (osName.contains("mac")) {
+			firefoxVersionCommand = "/Applications/Firefox.app/Contents/MacOS/firefox --version";
+		} else if (osName.contains("nux")) {
+			firefoxVersionCommand = "firefox --version";
+		} else {
+			throw new RuntimeException("Unsupported operating system.");
+		}
+
+		Process process = Runtime.getRuntime().exec(firefoxVersionCommand);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line;
+		StringBuilder output = new StringBuilder();
+
+		while ((line = reader.readLine()) != null) {
+			output.append(line);
+		}
+		reader.close();
+
+		String versionOutput = output.toString().trim();
+		return versionOutput.split(" ")[2]; // Extracting version number
+	}
+
+	private static String getSystemSafariVersion() throws IOException {
+		String safariVersionCommand = "/usr/bin/safaridriver --version";
+
+		Process process = Runtime.getRuntime().exec(safariVersionCommand);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line;
+		StringBuilder output = new StringBuilder();
+
+		while ((line = reader.readLine()) != null) {
+			output.append(line);
+		}
+		reader.close();
+
+		String versionOutput = output.toString().trim();
+		return versionOutput.split(" ")[1]; // Extracting version number
+	}
+
+	private static String getSystemEdgeVersion() throws IOException {
+		String osName = System.getProperty("os.name").toLowerCase();
+		String edgeVersionCommand;
+		String edgePath = "";
+
+		if (osName.contains("win")) {
+			// Check both potential installation paths for Edge on Windows
+			String edgePathX86 = System.getenv("ProgramFiles(x86)") + "\\Microsoft\\Edge\\Application\\msedge.exe";
+			String edgePathX64 = System.getenv("ProgramFiles") + "\\Microsoft\\Edge\\Application\\msedge.exe";
+
+			File edgeFileX86 = new File(edgePathX86);
+			File edgeFileX64 = new File(edgePathX64);
+
+			if (edgeFileX86.exists()) {
+				edgePath = edgePathX86;
+			} else if (edgeFileX64.exists()) {
+				edgePath = edgePathX64;
+			} else {
+				throw new RuntimeException("Edge executable not found in standard locations.");
+			}
+
+			edgeVersionCommand = "\"" + edgePath + "\" --version";
+		} else if (osName.contains("mac")) {
+			edgeVersionCommand = "/Applications/Microsoft\\ Edge.app/Contents/MacOS/Microsoft\\ Edge --version";
+		} else if (osName.contains("nux")) {
+			edgeVersionCommand = "microsoft-edge --version";
+		} else {
+			throw new RuntimeException("Unsupported operating system.");
+		}
+
+		Process process = Runtime.getRuntime().exec(edgeVersionCommand);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line;
+		StringBuilder output = new StringBuilder();
+
+		while ((line = reader.readLine()) != null) {
+			output.append(line);
+		}
+		reader.close();
+
+		String versionOutput = output.toString().trim();
+		return versionOutput.split(" ")[1]; // Extracting version number
 	}
 
 	private static void setupLocalNativeEnvironment(String platform, String mobilePlatformType) {
@@ -286,49 +512,131 @@ public class BaseTestUtil {
 		UIConstantsUtil.WEB_DRIVER = new RemoteWebDriver(UIConstantsUtil.appiumService.getUrl(), caps);
 	}
 
-	private static void setupBrowserStackWebEnvironment(String platform) throws MalformedURLException {
-		String USERNAME = UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_AccessKey");
-		String encodedAccessKey = UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_AccessKey");
+	private static void setupBrowserStackWebEnvironment() throws MalformedURLException, Exception {
+		// Fetching configuration data
+		String USERNAME = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_Username", "default_username");
+		String encodedAccessKey = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_AccessKey",
+				"default_encoded_key");
 		String ACCESS_KEY = TestReportUtility.decodeBase64(encodedAccessKey);
 		String BS_URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@hub-cloud.browserstack.com/wd/hub";
-		DesiredCapabilities caps = new DesiredCapabilities();
-		if (platform.equals("Windows") || platform.equals("Mac")) {
-			caps.setCapability("browserName", UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_BrowserName"));
-			caps.setCapability("browserVersion", UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_BrowserVersion"));
-			caps.setCapability("os", UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_OS_Desktop"));
-			caps.setCapability("os_version", UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_OSVersion_Desktop"));
-			caps.setCapability("resolution", UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_Resolution_Desktop"));
-			UIConstantsUtil.WEB_DRIVER = new RemoteWebDriver(new URL(BS_URL), caps);
+
+		// Default to Chrome on Windows if no browser or OS is specified
+		String browserName = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_BrowserName", "chrome")
+				.toLowerCase();
+		String osType = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_OS_Desktop", "Windows");
+		String osVersion = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_OSVersion_Desktop", "10");
+	    String browserVersion = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_BrowserVersion", "latest");
+
+		// Setting up browser-specific options
+		MutableCapabilities options;
+		switch (browserName) {
+		case "firefox":
+			options = new FirefoxOptions();
+			break;
+		case "chrome":
+			options = new ChromeOptions();
+			break;
+		case "safari":
+			SafariOptions safariOptions = new SafariOptions();
+			safariOptions.setCapability("safari.allowPopups", true);
+			safariOptions.setCapability("acceptSslCerts", true);
+			safariOptions.setCapability("browserName", UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_BrowserName", "chrome"));
+			safariOptions.setCapability("browserVersion", "latest");
+			safariOptions.setCapability("resolution",  UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_Resolution_Desktop", "1920x1080"));
+			safariOptions.setCapability("build", "YourBuildName_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
+
+			options = safariOptions;
+		
+			break;
+		case "edge":
+			options = new EdgeOptions();
+			break;
+		default:
+			throw new IllegalArgumentException("Browser \"" + browserName + "\" is not supported.");
 		}
+
+		// Configuring BrowserStack specific options
+		HashMap<String, Object> browserstackOptions = new HashMap<>();
+		browserstackOptions.put("os", osType);
+		browserstackOptions.put("osVersion", osVersion);
+		browserstackOptions.put("browserName",UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_BrowserName", "chrome"));
+		browserstackOptions.put("browserVersion", browserVersion);
+		browserstackOptions.put("resolution", UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_Resolution_Desktop", "1920x1080"));
+		String dateStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		browserstackOptions.put("buildName", "TestBuild_" + dateStamp);
+		browserstackOptions.put("debug", true);  // Enables visual logs
+		browserstackOptions.put("networkLogs", true);  // Captures network logs
+		browserstackOptions.put("consoleLogs", "verbose");  // Captures all console logs
+		browserstackOptions.put("video", true);  // Records a video of the session
+		options.setCapability("bstack:options", browserstackOptions);
+
+		  try {
+		        UIConstantsUtil.WEB_DRIVER = new RemoteWebDriver(new URL(BS_URL), options);
+		        configureTrustAllCerts();
+		        UIConstantsUtil.WEB_DRIVER.manage().window().maximize();
+		        UIConstantsUtil.WEB_DRIVER.manage().deleteAllCookies();
+		        UIConstantsUtil.WEB_DRIVER.navigate().to(UIConstantsUtil.APP_CONFIG_MAP.get("Web_BaseURL"));
+		        new WaitUtils(UIConstantsUtil.WEB_DRIVER).waitForPageLoaded();
+		        new WebResponseValidator(UIConstantsUtil.WEB_DRIVER).verifyWebResponseStatus();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        System.out.println("Starting BrowserStack session with URL: " + BS_URL);
+		        System.out.println("Capabilities: " + browserstackOptions);
+
+		        throw new Exception("Failed to start BrowserStack session: " + e.getMessage());
+		    }
+
 	}
 
 	private static void setupBrowserStackNativeEnvironment(String platform) throws MalformedURLException {
-		String USERNAME = UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_AccessKey");
-		String encodedAccessKey = UIConstantsUtil.APP_CONFIG_MAP.get("BrowserStack_AccessKey");
+		// Fetching username and access key correctly from the configuration
+		String USERNAME = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_Username", "default_username");
+		String encodedAccessKey = UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("BrowserStack_AccessKey",
+				"default_encoded_key");
 		String ACCESS_KEY = TestReportUtility.decodeBase64(encodedAccessKey);
 		String BS_URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@hub-cloud.browserstack.com/wd/hub";
+
+		// Desired capabilities
 		DesiredCapabilities caps = new DesiredCapabilities();
-		if (platform.equals("Android")) {
-			caps.setCapability("platformName", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidPlatformName"));
-			caps.setCapability("deviceName", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidDeviceName"));
-			caps.setCapability("platformVersion", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidPlatformVersion"));
-			caps.setCapability("app", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidApk"));
-			caps.setCapability("automationName", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidAutomationName"));
-			caps.setCapability("appPackage", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidAppPackage"));
-			caps.setCapability("appActivity", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidAppActivity"));
-			caps.setCapability("noReset", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidNoReset"));
-			caps.setCapability("fullReset", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidFullReset"));
-			UIConstantsUtil.WEB_DRIVER = new RemoteWebDriver(new URL(BS_URL), caps);
-		} else if (platform.equals("iOS")) {
-			caps.setCapability("platformName", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSPlatformName"));
-			caps.setCapability("deviceName", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSDeviceName"));
-			caps.setCapability("platformVersion", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSPlatformVersion"));
-			caps.setCapability("app", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSApp"));
-			caps.setCapability("automationName", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSAutomationName"));
-			caps.setCapability("noReset", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSNoReset"));
-			caps.setCapability("useNewWDA", UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSUseNewWDA"));
-			UIConstantsUtil.WEB_DRIVER = new RemoteWebDriver(new URL(BS_URL), caps);
+
+		if ("Android".equalsIgnoreCase(platform)) {
+			caps.setCapability("platformName", "Android");
+			caps.setCapability("deviceName",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidDeviceName", "default_android_device"));
+			caps.setCapability("platformVersion", UIConstantsUtil.APP_CONFIG_MAP
+					.getOrDefault("Mobile_AndroidPlatformVersion", "default_android_version"));
+			caps.setCapability("app",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidApk", "default_android_app.apk"));
+			caps.setCapability("automationName",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidAutomationName", "UiAutomator2"));
+			caps.setCapability("appPackage",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidAppPackage", "default_package"));
+			caps.setCapability("appActivity",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidAppActivity", "default_activity"));
+			caps.setCapability("noReset", Boolean
+					.parseBoolean(UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidNoReset", "false")));
+			caps.setCapability("fullReset", Boolean
+					.parseBoolean(UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_AndroidFullReset", "false")));
+		} else if ("iOS".equalsIgnoreCase(platform)) {
+			caps.setCapability("platformName", "iOS");
+			caps.setCapability("deviceName",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_iOSDeviceName", "default_ios_device"));
+			caps.setCapability("platformVersion",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_iOSPlatformVersion", "default_ios_version"));
+			caps.setCapability("app",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_iOSApp", "default_ios_app.app"));
+			caps.setCapability("automationName",
+					UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_iOSAutomationName", "XCUITest"));
+			caps.setCapability("noReset",
+					Boolean.parseBoolean(UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_iOSNoReset", "false")));
+			caps.setCapability("useNewWDA",
+					Boolean.parseBoolean(UIConstantsUtil.APP_CONFIG_MAP.getOrDefault("Mobile_iOSUseNewWDA", "true")));
+		} else {
+			throw new IllegalArgumentException("Unsupported platform: " + platform);
 		}
+
+		// Creating the driver with the given capabilities
+		UIConstantsUtil.WEB_DRIVER = new RemoteWebDriver(new URL(BS_URL), caps);
 	}
 
 	private static void setupBrowserStackHybridEnvironment(String platform) throws MalformedURLException {
@@ -367,20 +675,15 @@ public class BaseTestUtil {
 		if ("Yes".equalsIgnoreCase(web_Headless_Browser)) {
 			chromeOptions.addArguments("--headless"); // Enable headless mode
 		}
-		chromeOptions.addArguments("--incognito"); // Launch in incognito mode
-		chromeOptions.setExperimentalOption("useAutomationExtension", false);
-		chromeOptions.addArguments("download.prompt_for_download", "false");
-		chromeOptions.addArguments("download.directory_upgrade", "true");
-		chromeOptions.addArguments("--safebrowsing-disable-download-protection");
-		chromeOptions.addArguments("safebrowsing-disable-extension-blacklist");
-		chromeOptions.addArguments("--disable-gpu", "--disable-dev-shm-usage", "--ignore-certificate-errors",
-				"--allow-running-insecure-content", "--allow-insecure-localhost",
+		chromeOptions.addArguments("--incognito", "--disable-gpu", "--disable-dev-shm-usage",
+				"--ignore-certificate-errors", "--allow-running-insecure-content", "--allow-insecure-localhost",
 				"--unsafely-treat-insecure-origin-as-secure", "--ignore-urlfetcher-cert-requests", "--shm-size=2g",
 				"--privileged", "--verbose", "--disable-popup-blocking",
 				"--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-extensions",
 				"--ignore-ssl-error", "--dns-prefetch-disable", "--disable-web-security", "--no-proxy-server");
-		chromeOptions.addArguments("--ignore-certificate-errors");
+		chromeOptions.setExperimentalOption("useAutomationExtension", false);
 		chromeOptions.setExperimentalOption("excludeSwitches", new String[] { "enable-automation" });
+
 		Map<String, Object> prefs = new HashMap<>();
 		prefs.put("profile.default_content_setting_values.media_stream_mic", 2);
 		prefs.put("profile.default_content_setting_values.media_stream_camera", 2);
@@ -392,9 +695,11 @@ public class BaseTestUtil {
 		prefs.put("profile.content_settings.pattern_pairs.*.multiple-automatic-downloads", 1);
 		chromeOptions.setExperimentalOption("prefs", prefs);
 		chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
+
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
 		chromeOptions.setCapability("goog:loggingPrefs", logPrefs);
+
 		return chromeOptions;
 	}
 
@@ -729,26 +1034,52 @@ public class BaseTestUtil {
 		try {
 			Path path = Paths.get(featureFilePath);
 			List<String> fileContent = Files.readAllLines(path, StandardCharsets.UTF_8);
+
 			for (String line : fileContent) {
 				String trimmedLine = line.trim();
-				if (trimmedLine.startsWith("Scenario:")) {
-					count++; // Count each Scenario as one
-				} else if (trimmedLine.startsWith("Scenario Outline:")) {
+				if (isScenario(trimmedLine)) {
+					count++;
+				} else if (isScenarioOutline(trimmedLine)) {
 					isExampleHeader = true;
-				} else if (trimmedLine.startsWith("Examples:")) {
+				} else if (isExamples(trimmedLine)) {
 					inExamplesSection = true;
-				} else if (inExamplesSection && trimmedLine.startsWith("|") && !isExampleHeader) {
-					count++; // Count each example as one scenario
-				} else if (isExampleHeader && trimmedLine.startsWith("|")) {
-					isExampleHeader = false; // Skip the header row of the examples table
-				} else if (!trimmedLine.startsWith("|") && inExamplesSection) {
-					inExamplesSection = false; // Exit the examples section
+				} else if (isExampleData(inExamplesSection, isExampleHeader, trimmedLine)) {
+					count++;
+				} else if (isEndOfExampleHeader(isExampleHeader, trimmedLine)) {
+					isExampleHeader = false;
+				} else if (isEndOfExamplesSection(inExamplesSection, trimmedLine)) {
+					inExamplesSection = false;
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return count;
+	}
+
+	private static boolean isScenario(String line) {
+		return line.startsWith("Scenario:");
+	}
+
+	private static boolean isScenarioOutline(String line) {
+		return line.startsWith("Scenario Outline:");
+	}
+
+	private static boolean isExamples(String line) {
+		return line.startsWith("Examples:");
+	}
+
+	private static boolean isExampleData(boolean inExamplesSection, boolean isExampleHeader, String line) {
+		return inExamplesSection && line.startsWith("|") && !isExampleHeader;
+	}
+
+	private static boolean isEndOfExampleHeader(boolean isExampleHeader, String line) {
+		return isExampleHeader && line.startsWith("|");
+	}
+
+	private static boolean isEndOfExamplesSection(boolean inExamplesSection, String line) {
+		return !line.startsWith("|") && inExamplesSection;
 	}
 
 	public static String readFileAsString(String filePath) throws Exception {
@@ -756,24 +1087,69 @@ public class BaseTestUtil {
 	}
 
 	public static synchronized void modifyExtentReport() throws Exception {
-		String cssContent = BaseTestUtil.readFileAsString(TestReportUtility.EXTENT_REPORT_FOLDER + File.separator
-				+ "extentreports" + File.separator + "css" + File.separator + "css.css");
-		String jsContent = BaseTestUtil.readFileAsString(TestReportUtility.EXTENT_REPORT_FOLDER + File.separator
-				+ "extentreports" + File.separator + "js" + File.separator + "scripts.js");
-		List<String> lines = Files.readAllLines(
-				Paths.get(TestReportUtility.EXTENT_REPORT_FOLDER + UIConstantsUtil.ReportFile), StandardCharsets.UTF_8);
-		List<String> modifiedLines = lines.stream().map(line -> {
-			if (line.contains("<head>")) {
-				String fontAwesomeLink = "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">";
-				return line + fontAwesomeLink + "<style>" + cssContent + "</style>";
-			} else if (line.contains("</body>")) {
-				return "<script>" + jsContent + "</script>" + line;
-			}
-			return line;
-		}).collect(Collectors.toList());
-		String testName = TestReportUtility.testName();
-		String reportName = File.separator + testName.replaceAll("Log", "ExtentReport") + ".html";
-		Files.write(Paths.get(TestReportUtility.EXTENT_REPORT_FOLDER + File.separator + reportName), modifiedLines,
-				StandardCharsets.UTF_8);
+		try {
+			// Read the CSS and JS files
+			var cssContent = BaseTestUtil.readFileAsString(TestReportUtility.EXTENT_REPORT_FOLDER + File.separator
+					+ "extentreports" + File.separator + "css" + File.separator + "css.css");
+			var jsContent = BaseTestUtil.readFileAsString(TestReportUtility.EXTENT_REPORT_FOLDER + File.separator
+					+ "extentreports" + File.separator + "js" + File.separator + "scripts.js");
+			System.out.println(cssContent);
+			System.out.println(jsContent);
+			// Read the HTML file
+			var lines = Files.readAllLines(
+					Paths.get(TestReportUtility.EXTENT_REPORT_FOLDER + UIConstantsUtil.ReportFile),
+					StandardCharsets.UTF_8);
+
+			// Define additional JavaScript for dynamic HTML modification
+			String additionalJS = "$(document).ready(function() {"
+					+ " $('meta[name=\"viewport\"]').attr('content', 'width=device-width, initial-scale=1.0');"
+					+ " var clientNameElement = document.querySelector('#dashboard-view > div.system-view > div > div > table > tbody > tr:nth-child(6) > td:nth-child(2)');"
+					+ " var clientName = clientNameElement ? clientNameElement.textContent : '';"
+					+ " $('meta[name=\"description\"]').attr('content', clientName + ' Automation Test Report');" +
+					// Append various meta tags to the head
+					"$('head').append('<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">');"
+					+ "var metadec = 'Comprehensive Analysis and Results from the Latest Automated Execution Extent Report, showcasing key performance metrics, system efficiencies, and actionable insights for enhanced banking operations.';"
+					+ "$('head').append('<meta name=\"description\" content=\"' + metadec + '\">');"
+					+ "$('head').append('<meta name=\"robots\" content=\"follow, index\">');"
+					+ "$('head').append('<link rel=\"canonical\" href=\"' + window.location.href + '\">');"
+					+ "$('head').append('<meta name=\"keywords\" content=\"HTML,CSS,XML,JavaScript, visionet, extentreport\">');"
+					+ "$('head').append('<meta name=\"author\" content=\"' + atob('RGFrc2hpbmEgTW9vcnRoeQ==') + '\">');"
+					+ "$('head').append('<meta name=\"author contact\" content=\"' + atob('KDkxKTk3OCA5OTk4IDAyMQ==') + '\">');"
+					+ "$('#slide-out > li > a.categories-view, #slide-out > li > a.exceptions-view, #slide-out > li > a.testrunner-logs-view').remove();"
+					+
+
+					// Append favicon link and custom font
+					"$('head').append('<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"https://www.visionet.com/favicon.ico\">');"
+					+
+
+					// Footer section setup
+					"var footerdiv = document.createElement('div');" + "footerdiv.className = 'footer';"
+					+ "document.body.appendChild(footerdiv);" + "var innerDiv = document.createElement('div');"
+					+ "innerDiv.className = 'block-2';" + "footerdiv.appendChild(innerDiv);"
+					+ "innerDiv.innerHTML = '&#9999;&#65039; ' + atob('RGVzaWduIGFuZCBSZXNraW4gYnkgRGFrc2hpbmEgTW9vcnRoeQ==') + ' &#9733';"
+					+ "var innerDiv1 = document.createElement('div');" + "innerDiv1.className = 'new-footer-txt';"
+					+ "footerdiv.appendChild(innerDiv1);" + "var currentYear = new Date().getFullYear();"
+					+ "innerDiv1.innerHTML = ' &copy; ' + currentYear + ' Visionet Systems. All rights reserved.';"
+					+ "});";
+
+			List<String> modifiedLines = lines.stream().map(line -> {
+				if (line.contains("<head>")) {
+					String fontAwesomeLink = "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">";
+					return line + fontAwesomeLink + "<style>" + cssContent + "</style>";
+				} else if (line.contains("</body>")) {
+					return "<script>" + jsContent + additionalJS + "</script>" + line;
+				}
+				return line;
+			}).collect(Collectors.toList());
+			String testName = TestReportUtility.testName();
+			String reportName = File.separator + testName.replaceAll("Log", "ExtentReport") + ".html";
+			Files.write(Paths.get(TestReportUtility.EXTENT_REPORT_FOLDER + File.separator + reportName), modifiedLines,
+					StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
 }

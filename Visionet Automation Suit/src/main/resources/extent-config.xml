@@ -14,7 +14,11 @@
 		<!-- Document title -->
 		<documentTitle>Automation Execution Report | Visionet</documentTitle>
 
-		<!-- Report name displayed at top-nav -->
+		
+
+		<!-- Location of charts in the test view (top, bottom) -->
+		<testViewChartLocation>bottom</testViewChartLocation>
+<!-- Report name displayed at top-nav -->
 		<reportName><![CDATA[
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
             <div class="wrapper" style="background-color: #353b5f; color: #fff; margin-bottom: 0px !important; display: flex; justify-content: space-between; align-items: center;">
@@ -36,16 +40,12 @@
                     </li>
                 </ul>
             </div>
-            <div class="navbar-container" style="background-color: #fff; display: flex; justify-content: left; align-items: center; position: absolute; left: 0; right: 0; height: 48px; z-index: 2000; padding: 0 !important; line-height: 24.96px; letter-spacing: 4px !important; padding-left: 90px !important; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+            <div class="navbar-container" style="background-color: #fff; display: flex; justify-content: left; align-items: center; position: absolute; left: 0; right: 0; height: 76px; z-index: 2000; padding: 0 !important; line-height: 24.96px; letter-spacing: 4px !important; padding-left: 90px !important; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
                 <a class="navbar-brand rs_skip" style="padding-top: 5px;" href="https://www.visionet.com/" title="Visionet Automation Regression Report" target="_blank">
-                    <span style="color: #353b5f; font-family: Poppins !important; font-style: normal; font-feature-settings: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; word-spacing: 4px !important; font-weight: bolder; font-size: 28px;">VISIONET</span>
+                   <img style="width: 150px; height: auto;" src="https://www.visionet.com/sites/default/files/2024-05/logo-dark.svg" alt="Home" fetchpriority="high">
                 </a>
             </div>
         ]]></reportName>
-
-		<!-- Location of charts in the test view (top, bottom) -->
-		<testViewChartLocation>bottom</testViewChartLocation>
-
 		<!-- Scripts section -->
 		<scripts><![CDATA[
     $(document).ready(function() {
@@ -57,43 +57,49 @@
         var clientName = clientNameElement ? clientNameElement.textContent : '';
         $('meta[name="description"]').attr('content', clientName + " Automation Test Report");
 
-        // Append various meta tags to the head
-        $("head").append('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
-        var metadec = "Comprehensive Analysis and Results from the Latest Automated Execution Extent Report, showcasing key performance metrics, system efficiencies, and actionable insights for enhanced banking operations.";
-        $("head").append('<meta name="description" content="' + metadec + '">');
-        $("head").append('<meta name="robots" content="follow, index">');
-        $("head").append('<link rel="canonical" href="' + window.location.href + '">');
-        $("head").append('<meta name="keywords" content="HTML,CSS,XML,JavaScript, visionet, extentreport">');
-        $("head").append('<meta name="author" content="' + atob('RGFrc2hpbmEgTW9vcnRoeQ==') + '">');
-        $("head").append('<meta name="author contact" content="' + atob('KDkxKTk3OCA5OTk4IDAyMQ==') + '">');
+       // Append various meta tags to the head
+		$("head").append('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+		var metadec = "Comprehensive Analysis and Results from the Latest Automated Execution Extent Report, showcasing key performance metrics, system efficiencies, and actionable insights for enhanced banking operations.";
+		$("head").append('<meta name="description" content="' + metadec + '">');
+		$("head").append('<meta name="robots" content="follow, index">');
+		$("head").append('<link rel="canonical" href="' + window.location.href + '">');
+		$("head").append('<meta name="keywords" content="HTML,CSS,XML,JavaScript, visionet, extentreport">');
+		$("head").append('<meta name="author" content="' + atob('RGFrc2hpbmEgTW9vcnRoeQ==') + '">');
+		$("head").append('<meta name="author contact" content="' + atob('KDkxKTk3OCA5OTk4IDAyMQ==') + '">');
 
-        // Open Graph meta properties
-        var name = "Automation Extent Report";
-        $("head").append('<meta property="og:site_name" content="' + name + '">');
-        $("head").append('<meta property="og:type" content="website">');
-        $("head").append('<meta property="og:url" content="' + window.location.href + '">');
-        $("head").append('<meta property="og:title" content="Automation Extent Report | Insights and Analytics">');
-        $("head").append('<meta property="og:description" content="Automated Test Execution Extent Report">');
-        $("head").append('<meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScCjNsRoOXDjUtDcnB2-AViv3rE60l-TYZF8HGNSqIFA&s">');
-        // Append favicon link
-        $("head").append('<link rel="shortcut icon" type="image/x-icon" href="https://www.visionet.com/favicon.ico">');
+		// Open Graph meta properties
+		var name = "Automation Extent Report";
+		$("head").append('<meta property="og:site_name" content="' + name + '">');
+		$("head").append('<meta property="og:type" content="website">');
+		$("head").append('<meta property="og:url" content="' + window.location.href + '">');
+		$("head").append('<meta property="og:title" content="Automation Extent Report | Insights and Analytics">');
+		$("head").append('<meta property="og:description" content="Automated Test Execution Extent Report">');
+		$("head").append('<meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScCjNsRoOXDjUtDcnB2-AViv3rE60l-TYZF8HGNSqIFA&s">');
+		
+		// Append favicon link
+		$("head").append('<link rel="shortcut icon" type="image/x-icon" href="https://www.visionet.com/favicon.ico">');
+		$("head").append('<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">')
+		
+		// Remove specific sidebar elements using corrected selectors
+		$('#slide-out > li > a.categories-view, #slide-out > li > a.exceptions-view, #slide-out > li > a.testrunner-logs-view').remove();
+		
+		// Footer section setup
+		var footerdiv = document.createElement('div');
+		footerdiv.className = 'footer';
+		document.body.appendChild(footerdiv);
+		
+		var innerDiv = document.createElement('div');
+		innerDiv.className = 'block-2';
+		footerdiv.appendChild(innerDiv);
+		innerDiv.innerHTML = '&#9999;&#65039; ' + atob('RGVzaWduIGFuZCBSZXNraW4gYnkgRGFrc2hpbmEgTW9vcnRoeQ==') + ' &#9733;';
+		
+		var innerDiv1 = document.createElement('div');
+		innerDiv1.className = 'new-footer-txt';
+		footerdiv.appendChild(innerDiv1);
+		
+		var currentYear = new Date().getFullYear();
+		innerDiv1.innerHTML = ' &copy; ' + currentYear + ' Visionet Systems. All rights reserved.';
 
-        // Remove specific sidebar elements using corrected selectors
-        $('#slide-out > li > a.categories-view, #slide-out > li > a.exceptions-view, #slide-out > li > a.testrunner-logs-view').remove();
-
-        // Footer section setup
-        var footerdiv = document.createElement('div');
-        footerdiv.className = 'footer';
-        document.body.appendChild(footerdiv);
-        var innerDiv = document.createElement('div');
-        innerDiv.className = 'block-2';
-        footerdiv.appendChild(innerDiv);
-        innerDiv.innerHTML = '&#9999;&#65039; ' + atob('RGVzaWduIGFuZCBSZXNraW4gYnkgRGFrc2hpbmEgTW9vcnRoeQ==') + ' &#9733;';
-        var innerDiv1 = document.createElement('div');
-        innerDiv1.className = 'new-footer-txt';
-        footerdiv.appendChild(innerDiv1);
-        var currentYear = new Date().getFullYear();
-        innerDiv1.innerHTML = ' &copy; ' + currentYear + ' Visionet Systems. All rights reserved.';
     });
 ]]></scripts>
 
@@ -106,11 +112,14 @@
             .report-name > img { float: left; height: 90%; margin-left: 30px; margin-top: 2px; width: auto; background-image: url("https://www.visionet.com/"); }
             .report-img { cursor: zoom-in; width: auto; height: auto; max-width: 100%; box-shadow: 0 4px 16px rgba(0,0,0,0.30); background-color: #dc199b; background-blend-mode: multiply; margin-top: 43px; }
             .dark nav, .dark .side-nav { background: #ce0000; }
+          	div#test-view { margin-top: 40px !important; }
             nav { background-color: #353b5f !important; padding-left: 70px; position: fixed; z-index: 1; }
             h5.details-name { color: #58595b; text-transform: capitalize; }
             thead > tr > th { text-align: center; color: #fff !important; font-weight: bold !important; font-family: Poppins !important; background-color: #353b5f !important; border: 1px solid #cbcdd6; }
             li.analysis.waves-effect.active { background: #15238f; }
-            ul#slide-out { background: #353b5f !important; }
+            ul#slide-out { background: #353b5f !important;margin-top: 40px; }
+            .fa-dashboard:before, .fa-gauge-med:before, .fa-gauge:before, .fa-tachometer-alt-average:before { content: "\f624"; font-size: 20px; vertical-align: middle; }
+            .fa-list-check:before, .fa-tasks:before { content: "\f0ae"; font-size: 20px; }
             .nav-right li { border-left: 0px solid #fff !important; font-size: 12px; padding: 0 10px; }
             .nav-right li { color: #fff !important }
             .side-nav.fixed a, .side-nav li > a { color: #fff !important }
@@ -123,59 +132,60 @@
             .blue-grey.lighten-2 { background-color: #353b5f !important; }
             .red.lighten-2 { background-color: #e26856 !important; color: #fff !important; border: 1px solid #cbcdd6; border-radius: 6px !important; font-family: Poppins; }
             .green.lighten-2 { background-color: #fff !important; font-family: Poppins; color: #353b5f !important; border: 1px solid #cbcdd6; border-radius: 6px; }
-            .col.s12.m12.l4.fh > div { box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%); overflow: auto ! important; word-break: break-word; border-bottom: 8px solid #e26856; background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%); border-radius: 6px !important; }
+            .col.s12.m12.l4.fh > div { box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%); overflow: auto !important; word-break: break-word; border-bottom: 8px solid #e26856; background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%); border-radius: 6px !important; }
             .col.s12.m12.l4.fh span.panel-name { color: #13162a; font-family: Poppins; }
             .col.s12.m12.l4.fh span.pass-percentage { color: #13162a; font-family: Poppins; }
             .col.s12.m12.l4.fh > div > span.pass-percentage panel-lead { color: white; font-family: "Arial"; }
-            .card-panel table > tbody td:nth-child(1) { font-family: Poppins; color: #353b5f ! important; border: 1px solid #13162a; }
-            .card-panel, .card { background: #f0f1f1; border-radius: 5px; box-shadow: black; background: linear-gradient(to var(--form-gradient-direction), var(--form-gradient-start-color), var(--form-gradient-end-color)); box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%); overflow: auto !important; word-break: break-word; max-height: fit-content ! important; height: fit-content ! important; }
+            .card-panel table > tbody td:nth-child(1) { font-family: Poppins; color: #353b5f !important; border-bottom: 1px solid #13162a !important; vertical-align: middle; width: 191px !important; }
+            .card-panel, .card { background: #f0f1f1; border-radius: 5px; box-shadow: black; background: linear-gradient(to var(--form-gradient-direction), var(--form-gradient-start-color), var(--form-gradient-end-color)); box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%); overflow: auto !important; word-break: break-word; max-height: fit-content !important; height: fit-content !important; }
             .col.l2.m4.s6 { border-radius: 5px; }
             .card-panel table > tbody td:nth-child(2) { font-family: Poppins; color: #353b5f !important; border: 1px solid #13162a !important;}
             .label.outline { border: 1px solid !important; border-radius: 3px !important; margin-top: 0 !important; padding: 2px 5px !important; }
             .panel-lead { display: block; font-size: 50px; text-align: center; }
             body { background: #fff !important; user-select: none !important; }
-            #dashboard-view .progress { margin-top: 0px; }
+            #dashboard-view .progress { margin-top: 55px; }
             td.timestamp { background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important; }
-            td.status { background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) ! important; }
+            td.status { background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important; }
             .card-panel.heading > h5 { display: none; }
-            .card-panel.heading:after { display: inline; content: "Feature File Names"; text-transform: capitalize; color: #13162a; font-size: 20px; font-family: Poppins; font-weight: bold; }
-            .featherlight .featherlight-close-icon { position:absolute; z-index:9999; top:0; right:0; line-height:25px; width:25px; cursor:pointer; text-align:center; font-family: Arial, sans-serif; background: #f03861; background: rgb(226, 104, 86); color: #fff ! important; font-size: 10px; font-weight: 600; border-radius: 100%; }
+            .card-panel.heading:after { display: inline; content: "Feature File Names"; text-transform: capitalize; color: #13162a; font-size: 17px; font-family: Poppins; font-weight: bold; }
+            .featherlight .featherlight-close-icon { position:absolute; z-index:9999; top:0; right:0; line-height:25px; width:25px; cursor:pointer; text-align:center; font-family: Arial, sans-serif; background: #f03861; background: rgb(226, 104, 86); color: #fff !important; font-size: 10px; font-weight: 600; border-radius: 100%; }
             span.featherlight-close-icon.featherlight-close:hover { transform: rotate(45deg); }
-            div#dashboard-view .label.outline { background: #fff ! important; color: #42486f ! important; border-color: #939598 ! important; border-width: 1.59375px ! important; background-size: auto ! important; cursor: pointer; margin-bottom: 7px ! important; }
+            div#dashboard-view { background-image: url(https://www.visionet.com/sites/default/files/2024-04/bg-art2-home4.png?fid=86); }
+            div#dashboard-view .label.outline { background: #fff !important; color: #42486f !important; border-color: #939598 !important; border-width: 1.59375px !important; background-size: auto !important; cursor: pointer; margin-bottom: 7px !important; }
             div#dashboard-view .label.outline:hover { border-color: #202429 !important; }
-            .status.skip, .skip > i { color: gold ! important; }
+            .status.skip, .skip > i { color: gold !important; }
             .status.fail, .fail i { color: #FC100D; }
-            .featherlight .featherlight-content { position: relative; text-align: left; vertical-align: middle; display: inline-block; overflow: unset ! important; padding: 25px 25px 0; border-bottom: 25px solid transparent; min-width: 30%; margin-left: 5%; margin-right: 5%; max-height: 95%; background: unset ! important; cursor: auto; white-space: normal; }
+            .featherlight .featherlight-content { position: relative; text-align: left; vertical-align: middle; display: inline-block; overflow: unset !important; padding: 25px 25px 0; border-bottom: 25px solid transparent; min-width: 30%; margin-left: 5%; margin-right: 5%; max-height: 95%; background: unset !important; cursor: auto; white-space: normal; }
             .footer { left: 0; bottom: 0; width: 100%; background-color: #353b5f !important; height: 62px; position: fixed; text-align: start; line-height: 24.96px; z-index: 1; }
             @media (max-width: 768px) { .footer { height: 48px; line-height: 18px; } .footer > .block-2 { padding: 10px; font-size: x-small; } }
-            .footer > div { text-align: end; line-height: normal; width: 100%; cursor: none; position: fixed; font-family: Poppins; font-size: small; color: white; padding: 22px 16px 22px 97px; }
+            .footer > div { text-align: end; line-height: normal; width: 100%; cursor: none; position: fixed; font-family: Poppins; color: white; padding: 22px 16px 22px 60px; }
             @media (max-width: 768px) { .footer > div { padding: 10px; font-size: x-small; text-align: center; } }
-            .footer > .block-2 { color: white; font-family: Poppins; font-size: small; line-height: initial; display: inline-table; vertical-align: top; overflow: hidden; min-height: 10em; padding: 22px 16px 22px 97px; text-align: start; }
-            .side-nav { background: #f3f3f3 ! important; transition-duration: .25s; top: 95px; width: 60px; }
-            .container { padding-left: 57px !important; max-width: none !important; width: 100% !important; padding-top: 101px !important; margin: auto !important; box-sizing: border-box ! important; }
+            .footer > .block-2 { color: white; font-family: Poppins; line-height: initial; display: inline-table; vertical-align: top; overflow: hidden; min-height: 10em; padding: 22px 16px 22px 60px; text-align: start; }
+            .side-nav { background: #f3f3f3 !important; transition-duration: .25s; top: 95px; width: 60px; }
+            .container { padding-left: 57px !important; max-width: none !important; width: 100% !important; padding-top: 101px !important; margin: auto !important; box-sizing: border-box !important; }
             @media (max-width: 768px) { .container { padding-top: 100px !important; } }
             @media (max-width: 480px) { .container { padding-top: 50px !important; } }
             .col._addedCell1 { width: auto !important; }
             @media (max-width: 768px) { div#test-details-wrapper { display: flex; align-items: center; position: relative; z-index: 1; overflow: auto; flex-wrap: wrap; width: 100% !important; margin-top: 350px; left: 12px; overflow-y: scroll; overflow-wrap: break-word; max-height: 200px; } }
-            @media (max-width: 768px) { .col._addedCell1 { width: 100% !important; max-width: 86% !important; overflow: auto ! important; overflow-wrap: break-word !important; z-index: 1 !important; margin-bottom: 20px !important; position: fixed !important; margin-top: 53px; } }
-            @media only screen and (max-width: 992px) .side-nav.fixed { left: 0% ! important; margin-top: 105px ! important; }
+            @media (max-width: 768px) { .col._addedCell1 { width: 100% !important; max-width: 86% !important; overflow: auto !important; overflow-wrap: break-word !important; z-index: 1 !important; margin-bottom: 20px !important; position: fixed !important; margin-top: 53px; } }
+            @media only screen and (max-width: 992px) .side-nav.fixed { left: 0% !important; margin-top: 105px !important; }
             .Copyrights { color: white; padding-left: 30% !important; line-height: inherit !important; font-size: smaller; display: inline-table; vertical-align: middle; min-height: 10em; overflow: hidden; text-align: start; overflow: hidden; text-align: start; min-height: 10em; }
             sup { top: -0.3em; color: floralwhite; font-weight: 900; font-family: auto; overflow: hidden; text-align: start; overflow: hidden; text-align: start; min-height: 10em; }
-            td.step-details { white-space: break-spaces !important; height: 300px; padding: 10px; overflow-x: auto !important; width: auto ! important; font-weight: normal ! important; background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important; border: 1px solid #13162a ! important; max-width: 100% ! important; }
-            .test-steps th:nth-child(4) { visibility: hidden; position: relative; padding-right: 223px; max-width: 100px ! important; width: auto ! important; border: 1px solid #13162a ! important; color: #13162a ! important; }
+            td.step-details { white-space: break-spaces !important; height: 300px; padding: 10px; overflow-x: auto !important; width: auto !important; font-weight: normal !important; background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important; border: 1px solid #13162a !important; max-width: 100% !important; }
+            .test-steps th:nth-child(4) { visibility: hidden; position: relative; padding-right: 223px; max-width: 100px !important; width: auto !important; border: 1px solid #13162a !important; color: #13162a !important; }
             .test-steps th:nth-child(4):after { content: "ScreenShort"; visibility: visible; position: relative; padding-left: 0px; }
-            .test-steps th:nth-child(3) { visibility:hidden; position:relative; max-width:100px ! important; width:auto !important; border:1px solid #13162a ! important; color:#13162a ! important; font-family: Poppins !important; text-align:left; }
+            .test-steps th:nth-child(3) { visibility:hidden; position:relative; max-width:100px !important; width:auto !important; border:1px solid #13162a !important; color:#13162a !important; font-family: Poppins !important; text-align:left; }
             .test-steps th:nth-child(3):after { content: "Test Steps"; visibility:visible; position:absolute; }
             td.step-details::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9); border-radius: 10px; background-color: #CCCCCC; }
             td.step-details::-webkit-scrollbar { background-color: #fff; }
             td.step-details::-webkit-scrollbar-thumb { border-radius: 10px; background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important;; background-image: -webkit-linear-gradient(90deg, transparent, rgba(226, 104, 86, 0.4) 50%, transparent, transparent); }
-            td.step-name { word-wrap: break-word; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: rgba(0,0,0,0); background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) ! important; font-family: Poppins; font-size: 1rem; font-weight: 400; line-height: 1.25rem; margin: 0; position:relative; text-align:left; padding-top:50px; border: 1px solid #13162a ! important; }
+            td.step-name { word-wrap: break-word; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: rgba(0,0,0,0); background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important; font-family: Poppins; font-size: 1rem; font-weight: 400; line-height: 1.25rem; margin: 0; position:relative; text-align:left; padding-top:50px; border: 1px solid #13162a !important; max-width: auto !important;}
             .test-desc { margin-bottom: 10px; color: chocolate; font-family: cursive; font-weight: 500; }
             .json-key { color: #ba4360; }
             .json-value { color: green; }
             .json-string { color: #7298c5; }
-            td.step-details > div { color: #353b5f ! important; }
-            td.status { background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) ! important }
+            td.step-details > div { color: #353b5f !important; }
+            td.status { background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important }
             div#error_response { color: #eb3941; }
             div#refer_resp { color: #1a0dab; font-size: xx-small; cursor: pointer; }
             span#hand_icon { font-size: small; }
@@ -183,28 +193,33 @@
             ::-webkit-scrollbar { width: 5px; height: 5px; }
             ::-webkit-scrollbar-thumb { border-radius: 10px; background-color: #353b5f !important; background-image: -webkit-linear-gradient(90deg, transparent, rgba(226, 104, 86, 0.4) 50%, transparent, transparent); }
             ::-webkit-scrollbar-track { background-color: #fff; }
-            .test-steps th:first-child, .test-steps td:first-child { text-align: left !important; max-width: 100px !important; width: auto ! important; border: 1px solid #13162a !important; color: #13162a !important; font-family: Poppins !important; }
-            .status i { font-size: 3rem ! important; }
-            .card.green-accent { top: 50px ! important; width: 97% ! important; background: #f7f7f7 ! important; color: #13162a ! important; font-family: Poppins ! important; border-radius: 6px ! important; height: 100px ! important; }
-            .test-name, .category-name { font-size: 14px ! important; font-family: Poppins ! important; }
-            .card.pink-accent { top: 50px ! important; text-align: end ! important; background: #f7f7f7 ! important; color: #13162a ! important; font-family: Poppins ! important; border-radius: 6px ! important; height: 100px ! important; }
+            .test-steps th:first-child, .test-steps td:first-child { text-align: left !important; max-width: 65px !important; width: auto !important; border: 1px solid #13162a !important; color: #13162a !important; font-family: Poppins !important; }
+            .status i { font-size: 3rem !important; }
+            .card.green-accent { top: 50px !important; width: 97% !important; background: #f7f7f7 !important; color: #13162a !important; font-family: Poppins !important; border-radius: 6px !important; height: 100px !important; }
+            .test-name, .category-name { font-size: 12px !important; font-family: Poppins !important; }
+            .card.pink-accent { top: 50px !important; text-align: end !important; background: #f7f7f7 !important; color: #13162a !important; font-family: Poppins !important; border-radius: 6px !important; height: 100px !important; }
             span#innerdiv { padding-left: 10px; font-weight: bolder; padding-right: 6px; color: blue; cursor: pointer; }
             thead { word-break: keep-all !important; }
             .status.info, .info > i { color: #006daf; }
             nav::after { content: ''; display: block; width: 100%; height: 0px; background-color: #4b0050; position: sticky; bottom: 0; left: 0; z-index: 9999; }
             .side-nav li:hover a, .side-nav li.active a { color: #fff !important; }
             span#innerdiv:hover { color: navy; }
+            .side-nav li { display: block; vertical-align: middle; margin-left: -7px; }
+            .details-container, .cat-container { background: #fff none repeat scroll 0 0; margin: 0 -20px; padding: 0 20px 20% !important; }
             .wrapper { background: #fff; height: 100%; overflow: auto; margin-bottom: 25% !important; }
-            .test-steps th:nth-child(2), .test-steps td:nth-child(2) { text-align: left !important; max-width: 100px ! important; width: auto ! important; border: 1px solid #13162a ! important; color: #13162a ! important; font-family: Poppins ! important; }
+            .test-steps th:nth-child(2), .test-steps td:nth-child(2) { text-align: center !important; max-width: 86px !important; width: auto !important; border: 1px solid #13162a !important; color: #13162a !important; font-family: Poppins !important; }
             table.bordered > thead > tr, table.bordered > tbody > tr { border: none; }
-            th, td { border-bottom: 0px solid #ddd ! important; color: #222 ! important; }
-            .test-body .collapsible > li.active { border: none ! important; background: #fdfdfd ! important; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) ! important; }
-            .system-view .card-panel thead > tr > th { border: 1px solid #13162a ! important; background-color: #353b5f ! important; }
-            table.bordered.table-results thead > tr > th { background-color: #fff ! important; }
-            #dashboard-view.row .col { margin-bottom: 80px ! important; }
-            .system-view > .col.l4.m12.s12 { float: none ! important; right: 0; display: flex; justify-content: flex-start; position: relative; }
+            th, td { border-bottom: 0px solid #ddd !important; color: #222 !important; }
+            .test-body .collapsible > li.active { border: none !important; background: #fdfdfd !important; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important; }
+            .system-view .card-panel thead > tr > th { border: 1px solid #13162a !important; background-color: #353b5f !important; }
+            table.bordered.table-results thead > tr > th { background-color: #fff !important; }
+            .test-steps, .cat-tests { margin-top: 50px; }
+            i.fa.fa-fa.fa-check-circle-o { display: block !important; text-align: center !important; }
+            #dashboard-view.row .col { margin-bottom: 80px !important; }
+            #dashboard-view > div.system-view > div > div > table > tbody { border: 1px solid #13162a !important; }
+            .system-view > .col.l4.m12.s12 { float: none !important; right: 0; display: flex; justify-content: flex-start; position: relative; }
             @media (max-width: 992px) { .system-view > .col.l4.m12.s12 { right: auto; } }
-            .card.suite-total-tests, .card.suite-total-steps, .card.suite-total-time-current, .card.suite-total-time-overall { height: 100px ! important; top: 50px ! important; background: #f0f1f1; color: #353b5f ! important; font-family: Poppins ! important; }
+            .card.suite-total-tests, .card.suite-total-steps, .card.suite-total-time-current, .card.suite-total-time-overall { height: 100px !important; top: 50px !important;color: #353b5f !important; font-family: Poppins !important; }
         	.status.pass, .pass > i {color: #32CD32 !important;}
         	.category-summary-view{display: none;}
         ]]></styles>

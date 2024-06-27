@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +50,12 @@ public class UtilityHelper {
 	}
 
 	private void installFontsRecursively(File directory) {
-		for (File file : Objects.requireNonNull(directory.listFiles())) {
+		File[] files = directory.listFiles();
+		if (files == null) {
+			System.err.println("Error listing files in directory: " + directory.getPath());
+			return;
+		}
+		for (File file : files) {
 			if (file.isDirectory()) {
 				installFontsRecursively(file);
 			} else if (file.isFile() && (file.getName().endsWith(".ttf") || file.getName().endsWith(".otf"))) {
@@ -141,7 +145,7 @@ public class UtilityHelper {
 		ImageIO.write(img, "png", new File(screenshotPath));
 	}
 
-	private static LogStatus convertStatusToLogStatus(int status) {
+	public static LogStatus convertStatusToLogStatus(int status) {
 		return switch (status) {
 		case ITestResult.SUCCESS -> LogStatus.PASS;
 		case ITestResult.FAILURE -> LogStatus.FAIL;

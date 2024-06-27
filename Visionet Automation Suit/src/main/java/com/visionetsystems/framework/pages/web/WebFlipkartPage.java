@@ -42,7 +42,8 @@ public class WebFlipkartPage extends BasePage {
 	public void navigateToHomePage() throws Exception {
 		new WaitUtils(driver).waitForPageLoaded();
 		new WaitUtils(driver).hardWait(5000);
-
+		// WebElement
+		// getADemo=driver.findElement(RelativeLocator.with(By.cssSelector("")).above(flipkartPageFactory.inpSearchBox));
 		if (driver.getCurrentUrl().equals(URLConstants.HomePage)) {
 			UtilityHelper.takeFullScreenShots("I expect to navigate to the URL: '" + URLConstants.HomePage + "' ",
 					"I actually navigated to the URL: '" + driver.getCurrentUrl() + "'", ITestResult.SUCCESS);

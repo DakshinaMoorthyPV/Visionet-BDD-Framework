@@ -12,7 +12,7 @@ import java.util.Base64;
 public class FileEncryption {
 	public static void main(String[] args) throws Exception {
 		// Getting encoder
-		String sample = "Dakshina Moorthy";
+		String sample = "Z5BTunqYE7GAC1KPnPai";
 		// print actual String
 		System.out.println("Sample String:\n" + sample);
 

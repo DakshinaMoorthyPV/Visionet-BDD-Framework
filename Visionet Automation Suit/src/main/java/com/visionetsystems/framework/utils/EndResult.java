@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.visionetsystems.framework.utils.otherpages.Block;
 import com.visionetsystems.framework.utils.otherpages.Board;
@@ -64,8 +65,13 @@ public class EndResult {
 		if ("Web".equalsIgnoreCase(UIConstantsUtil.APP_CONFIG_MAP.get("TestType"))
 				|| "Hybrid".equalsIgnoreCase(UIConstantsUtil.APP_CONFIG_MAP.get("TestType"))) {
 			t2Rows.add(Arrays.asList("Browser Name",
-					UIConstantsUtil.APP_CONFIG_MAP.get("Web_Browser") + " - " + UIConstantsUtil.BROWSER_VERSION));
-		} else {
+					((RemoteWebDriver) UIConstantsUtil.WEB_DRIVER).getCapabilities().getBrowserName() + " - " + UIConstantsUtil.BROWSER_VERSION));
+		}
+		else if ("API".equalsIgnoreCase(UIConstantsUtil.APP_CONFIG_MAP.get("TestType"))) {
+			t2Rows.add(Arrays.asList("Test Type","API Automation"));
+		}
+		
+		else {
 			String apkPath = "Android".equalsIgnoreCase(UIConstantsUtil.APP_CONFIG_MAP.get("Platform"))
 					? UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_AndroidApk")
 					: UIConstantsUtil.APP_CONFIG_MAP.get("Mobile_iOSApp");
