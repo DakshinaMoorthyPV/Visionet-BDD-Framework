@@ -173,7 +173,7 @@
             sup { top: -0.3em; color: floralwhite; font-weight: 900; font-family: auto; overflow: hidden; text-align: start; overflow: hidden; text-align: start; min-height: 10em; }
             td.step-details { white-space: break-spaces !important; height: 300px; padding: 10px; overflow-x: auto !important; width: auto !important; font-weight: normal !important; background: linear-gradient(to bottom, #f6e8e6 0%, #fff 100%) !important; border: 1px solid #13162a !important; max-width: 100% !important; }
             .test-steps th:nth-child(4) { visibility: hidden; position: relative; padding-right: 223px; max-width: 100px !important; width: auto !important; border: 1px solid #13162a !important; color: #13162a !important; }
-            .test-steps th:nth-child(4):after { content: "ScreenShort"; visibility: visible; position: relative; padding-left: 0px; }
+            .test-steps th:nth-child(4):after { content: "ScreenShot"; visibility: visible; position: relative; padding-left: 0px; }
             .test-steps th:nth-child(3) { visibility:hidden; position:relative; max-width:100px !important; width:auto !important; border:1px solid #13162a !important; color:#13162a !important; font-family: Poppins !important; text-align:left; }
             .test-steps th:nth-child(3):after { content: "Test Steps"; visibility:visible; position:absolute; }
             td.step-details::-webkit-scrollbar-track { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9); border-radius: 10px; background-color: #CCCCCC; }
